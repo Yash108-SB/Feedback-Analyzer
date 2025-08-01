@@ -1,0 +1,223 @@
+{
+  "name": "Project - 1 :  Feedback Analyzer",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1EFnWFi36ziYmkO75u3C9NDL8TwKdK5lZrKSkGTjeB3o",
+          "mode": "list",
+          "cachedResultName": "Feedback ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EFnWFi36ziYmkO75u3C9NDL8TwKdK5lZrKSkGTjeB3o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 322708927,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EFnWFi36ziYmkO75u3C9NDL8TwKdK5lZrKSkGTjeB3o/edit#gid=322708927"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -48
+      ],
+      "id": "ba95bef1-c9e8-4a57-a6a6-bdc05ae30733",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "HxCzQ6Jjza1f2C45",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Analyze the following feedback and do the following:\n1. Determine sentiment (Positive, Neutral, Negative).\n2. Provide a short summary.\n3. Highlight any key problems or concerns expressed.\n\nFeedback: {{ $json['Feedback '] }}\n\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        80,
+        -48
+      ],
+      "id": "088ef45b-75c2-4c99-aaef-299d85c0bdd0",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "YS4OePtp2oRhUvoP",
+          "name": "OpenAi account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1EFnWFi36ziYmkO75u3C9NDL8TwKdK5lZrKSkGTjeB3o",
+          "mode": "list",
+          "cachedResultName": "Feedback ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EFnWFi36ziYmkO75u3C9NDL8TwKdK5lZrKSkGTjeB3o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 322708927,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EFnWFi36ziYmkO75u3C9NDL8TwKdK5lZrKSkGTjeB3o/edit#gid=322708927"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $('Google Sheets Trigger').item.json.Timestamp }}",
+            "Name ": "={{ $('Google Sheets Trigger').item.json['Name '] }}",
+            "Email": "={{ $('Google Sheets Trigger').item.json.Email }}",
+            "Feedback ": "={{ $('Google Sheets Trigger').item.json['Feedback '] }}",
+            "Analysis": "={{ $json.message.content }}"
+          },
+          "matchingColumns": [
+            "Timestamp"
+          ],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name ",
+              "displayName": "Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Feedback ",
+              "displayName": "Feedback ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Analysis",
+              "displayName": "Analysis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        432,
+        -48
+      ],
+      "id": "365ce4dd-bec3-45a5-8603-1784e3404622",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "bnMFwAdIl9MFTOfx",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "abdf2e3f-a465-482d-b94d-25ec1af096a2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "00f76798dae718f0e6924a4ed2d6ba27f1d60ba697fbdf16bad992a750319b45"
+  },
+  "id": "SbcqpvVtLOkXxh2h",
+  "tags": []
+}
